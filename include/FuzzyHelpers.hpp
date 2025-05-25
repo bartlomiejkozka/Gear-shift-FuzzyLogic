@@ -3,6 +3,22 @@
 
 #include <cstdint>
 #include <unordered_map>
+#include "FuzzyInputs.hpp"
+#include <tuple>
+
+
+// have to add hashing for std::tuple to use it as a key in unordered_map
+namespace std {
+    template<>
+    struct hash<std::tuple<Velocity::level, EngineRpm::level, ThrottleLevel::level>> {
+        std::size_t operator()(const std::tuple<Velocity::level, EngineRpm::level, ThrottleLevel::level>& t) const noexcept {
+            auto h1 = std::hash<int>{}(static_cast<int>(std::get<0>(t)));
+            auto h2 = std::hash<int>{}(static_cast<int>(std::get<1>(t)));
+            auto h3 = std::hash<int>{}(static_cast<int>(std::get<2>(t)));
+            return h1 ^ (h2 << 1) ^ (h3 << 2); // proste mieszanie bitów
+        }
+    };
+}
 
 
 /*
@@ -11,91 +27,47 @@
 
 inline float triangular(float x, float a, float b, float c) 
 {
-    if (x <= a || x >= c) return 0.0f;
+    if (x < a || x > c) return 0.0f;
     else if (x == b) return 1.0f;
     else if (x < b) return (x - a) / (b - a);
     else return (c - x) / (c - b);
 }
 
-inline float calcProbability(float value, const std::array<uint8_t, 3>& range) 
+
+// already returns only probabilities over 0
+// The probabilites equals 0 does not matter, because they are not used in the rules
+
+template<class T>
+inline std::unordered_map<typename T::level, float> calcProbabilities(float value) 
 {
-    if (value < range[0] || value > range[2]) return 0.0f;
-    return triangular(static_cast<float>(value), static_cast<float>(range[0]), static_cast<float>(range[1]), static_cast<float>(range[2]));
+    std::unordered_map<typename T::level, float> probabilities;
+    for (auto& [key, range] : T::ranges) 
+    {
+        float prob = triangular(value, static_cast<float>(range[0]), static_cast<float>(range[1]), static_cast<float>(range[2]));
+        if (prob > 0.0f) 
+        {
+            probabilities[key] = prob;
+        }
+    }
+    return probabilities;
 }
 
+// Function for calculate the gravity center of a fuzzy set
+// weighted average - centroid of peaks - approximate method
 
-/*
-* Velocity, EngineRpm ThrottleLevel and Gear structures are helpers to clearly get probabilities for Fuzzy Logic rules.
-*/
+inline float defuzzifyWeightedAverage(const std::unordered_map<Gear::level, float>& memberships, const std::unordered_map<Gear::level, std::array<uint8_t, 3>>& ranges) {
+    float numerator = 0.0f;
+    float denominator = 0.0f;
 
-struct Velocity
-{
-    enum class VelocityLevel 
+    for (const auto& [label, weight] : memberships) 
     {
-        VERY_LOW,
-        LOW,
-        MEDIUM,
-        HIGH,
-        VERY_HIGH
-    };
+        float peak = ranges.at(label)[1];
+        numerator += peak * weight;
+        denominator += weight;
+    }
 
-    inline static const std::unordered_map<VelocityLevel, std::array<uint8_t, 3>> velocityRanges = {
-        {VelocityLevel::VERY_LOW, {0, 0, 20}},
-        {VelocityLevel::LOW, {10, 30, 50}},
-        {VelocityLevel::MEDIUM, {40, 60, 80}},
-        {VelocityLevel::HIGH, {70, 90, 120}},
-        {VelocityLevel::VERY_HIGH, {100, 120, 255}}
-    };
-};
-
-struct EngineRpm
-{
-    enum class RpmLevel 
-    {
-        LOW,
-        MEDIUM,
-        HIGH
-    };
-
-    inline static const std::unordered_map<RpmLevel, std::array<uint16_t, 3>> rpmRanges = {
-        {RpmLevel::LOW, {0, 1500, 2500}},
-        {RpmLevel::MEDIUM, {2000, 3000, 4000}},
-        {RpmLevel::HIGH, {3500, 4500, 6000}}
-    };
-};
-
-struct ThrottleLevel
-{
-    enum class ThrottleLevelEnum 
-    {
-        LOW,
-        MEDIUM,
-        HIGH
-    };
-
-    inline static const std::unordered_map<ThrottleLevelEnum, std::array<uint8_t, 3>> throttleRanges = {
-        {ThrottleLevelEnum::LOW, {0, 30, 50}},
-        {ThrottleLevelEnum::MEDIUM, {40, 60, 80}},
-        {ThrottleLevelEnum::HIGH, {70, 90, 100}}
-    };
-};
-
-struct Gear
-{
-    enum class GearLevel
-    {
-        START,
-        LOW,
-        MEDIUM,
-        HIGH
-    };
-
-    inline static const std::unordered_map<GearLevel, std::array<uint8_t, 3>> gearRanges = {
-        {GearLevel::START, {0, 0, 2}},
-        {GearLevel::LOW, {0, 2, 4}},
-        {GearLevel::MEDIUM, {2, 4, 6}},
-        {GearLevel::HIGH, {4, 6, 7}}
-    };
-};
+    if (denominator == 0.0f) return 0.0f;
+    return numerator / denominator;
+}
 
 #endif

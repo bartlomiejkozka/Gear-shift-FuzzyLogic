@@ -10,4 +10,5 @@ add_library(GearShift src/GearShift.cpp)
 target_include_directories(GearShift PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
-add_executable(Barkoz-Tempo src/main.cpp)
+add_executable(GearShift-Fuzzy src/main.cpp)
+target_link_libraries(GearShift-Fuzzy PRIVATE GearShift)

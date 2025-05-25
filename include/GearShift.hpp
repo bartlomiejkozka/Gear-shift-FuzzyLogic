@@ -51,17 +51,11 @@ class GearShift {
     //------------------
     // methods
     //------------------
-    uint8_t const shift();
+    float const shift();
 
     //------------------
     // Helpers
     //------------------
-    void mapInputs();
-
-    void calculateInputsProbabilities()
-    {
-        
-    }
 
     private:
     uint8_t gear;

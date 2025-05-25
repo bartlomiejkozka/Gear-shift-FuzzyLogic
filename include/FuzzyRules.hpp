@@ -30,77 +30,77 @@
 
 struct FuzzyRules
 {
-    inline static const std::unordered_map<std::tuple<Velocity::VelocityLevel, EngineRpm::RpmLevel, ThrottleLevel::ThrottleLevelEnum>, Gear::GearLevel> rules = [] () {
-        std::unordered_map<std::tuple<Velocity::VelocityLevel, EngineRpm::RpmLevel, ThrottleLevel::ThrottleLevelEnum>, Gear::GearLevel> temp;
+    inline static const std::unordered_map<std::tuple<Velocity::level, EngineRpm::level, ThrottleLevel::level>, Gear::level> rules = [] () {
+        std::unordered_map<std::tuple<Velocity::level, EngineRpm::level, ThrottleLevel::level>, Gear::level> temp;
       
-        for (auto v : {Velocity::VelocityLevel::VERY_LOW, Velocity::VelocityLevel::LOW, Velocity::VelocityLevel::MEDIUM, Velocity::VelocityLevel::HIGH, Velocity::VelocityLevel::VERY_HIGH}) 
+        for (auto v : {Velocity::level::VERY_LOW, Velocity::level::LOW, Velocity::level::MEDIUM, Velocity::level::HIGH, Velocity::level::VERY_HIGH}) 
         {
-            for (auto r : {EngineRpm::RpmLevel::LOW, EngineRpm::RpmLevel::MEDIUM, EngineRpm::RpmLevel::HIGH}) 
+            for (auto r : {EngineRpm::level::LOW, EngineRpm::level::MEDIUM, EngineRpm::level::HIGH}) 
             {
-                for (auto t : {ThrottleLevel::ThrottleLevelEnum::LOW, ThrottleLevel::ThrottleLevelEnum::MEDIUM, ThrottleLevel::ThrottleLevelEnum::HIGH}) 
+                for (auto t : {ThrottleLevel::level::LOW, ThrottleLevel::level::MEDIUM, ThrottleLevel::level::HIGH}) 
                 {
                     // 1
-                    if (v == Velocity::VelocityLevel::VERY_LOW && 
-                        (r == EngineRpm::RpmLevel::LOW || r == EngineRpm::RpmLevel::MEDIUM || r == EngineRpm::RpmLevel::HIGH) && 
-                        (t == ThrottleLevel::ThrottleLevelEnum::LOW || t == ThrottleLevel::ThrottleLevelEnum::MEDIUM || t == ThrottleLevel::ThrottleLevelEnum::HIGH))
+                    if (v == Velocity::level::VERY_LOW && 
+                        (r == EngineRpm::level::LOW || r == EngineRpm::level::MEDIUM || r == EngineRpm::level::HIGH) && 
+                        (t == ThrottleLevel::level::LOW || t == ThrottleLevel::level::MEDIUM || t == ThrottleLevel::level::HIGH))
                     {
-                        temp[std::make_tuple(v, r, t)] = Gear::GearLevel::START;
+                        temp[std::make_tuple(v, r, t)] = Gear::level::START;
                     }
                     // 2
-                    else if ((v == Velocity::VelocityLevel::LOW || v == Velocity::VelocityLevel::MEDIUM) && 
-                    (r == EngineRpm::RpmLevel::LOW || r == EngineRpm::RpmLevel::MEDIUM || r == EngineRpm::RpmLevel::HIGH) && 
-                    (t == ThrottleLevel::ThrottleLevelEnum::LOW || t == ThrottleLevel::ThrottleLevelEnum::MEDIUM || t == ThrottleLevel::ThrottleLevelEnum::HIGH))
+                    else if ((v == Velocity::level::LOW || v == Velocity::level::MEDIUM) && 
+                    (r == EngineRpm::level::LOW || r == EngineRpm::level::MEDIUM || r == EngineRpm::level::HIGH) && 
+                    (t == ThrottleLevel::level::LOW || t == ThrottleLevel::level::MEDIUM || t == ThrottleLevel::level::HIGH))
                     {
-                        temp[std::make_tuple(v, r, t)] = Gear::GearLevel::LOW;
+                        temp[std::make_tuple(v, r, t)] = Gear::level::LOW;
                     }
                     // 3
-                    else if (v == Velocity::VelocityLevel::HIGH && 
-                    (r == EngineRpm::RpmLevel::LOW || r == EngineRpm::RpmLevel::MEDIUM || r == EngineRpm::RpmLevel::HIGH) && 
-                    (t == ThrottleLevel::ThrottleLevelEnum::LOW || t == ThrottleLevel::ThrottleLevelEnum::MEDIUM || t == ThrottleLevel::ThrottleLevelEnum::HIGH))
+                    else if (v == Velocity::level::LOW && 
+                    (r == EngineRpm::level::LOW || r == EngineRpm::level::MEDIUM || r == EngineRpm::level::HIGH) && 
+                    (t == ThrottleLevel::level::LOW || t == ThrottleLevel::level::MEDIUM || t == ThrottleLevel::level::HIGH))
                     {
-                        temp[std::make_tuple(v, r, t)] = Gear::GearLevel::MEDIUM;
+                        temp[std::make_tuple(v, r, t)] = Gear::level::MEDIUM;
                     }
                     // 4
-                    else if (v == Velocity::VelocityLevel::MEDIUM && 
-                             r == EngineRpm::RpmLevel::LOW && 
-                             t == ThrottleLevel::ThrottleLevelEnum::HIGH)
+                    else if (v == Velocity::level::MEDIUM && 
+                             r == EngineRpm::level::LOW && 
+                             t == ThrottleLevel::level::HIGH)
                     {
-                        temp[std::make_tuple(v, r, t)] = Gear::GearLevel::LOW;
+                        temp[std::make_tuple(v, r, t)] = Gear::level::LOW;
                     }
                     // 5 and 6
-                    else if (v == Velocity::VelocityLevel::MEDIUM && 
-                             (r == EngineRpm::RpmLevel::LOW || r == EngineRpm::RpmLevel::MEDIUM) && 
-                             (t == ThrottleLevel::ThrottleLevelEnum::LOW || t == ThrottleLevel::ThrottleLevelEnum::MEDIUM || t == ThrottleLevel::ThrottleLevelEnum::HIGH))
+                    else if (v == Velocity::level::MEDIUM && 
+                             (r == EngineRpm::level::LOW || r == EngineRpm::level::MEDIUM) && 
+                             (t == ThrottleLevel::level::LOW || t == ThrottleLevel::level::MEDIUM || t == ThrottleLevel::level::HIGH))
                     {
-                        temp[std::make_tuple(v, r, t)] = Gear::GearLevel::MEDIUM;
+                        temp[std::make_tuple(v, r, t)] = Gear::level::MEDIUM;
                     }
                     // 7
-                    else if (v == Velocity::VelocityLevel::MEDIUM && 
-                             r == EngineRpm::RpmLevel::HIGH && 
-                             (t == ThrottleLevel::ThrottleLevelEnum::LOW || t == ThrottleLevel::ThrottleLevelEnum::MEDIUM || t == ThrottleLevel::ThrottleLevelEnum::HIGH))
+                    else if (v == Velocity::level::MEDIUM && 
+                             r == EngineRpm::level::HIGH && 
+                             (t == ThrottleLevel::level::LOW || t == ThrottleLevel::level::MEDIUM || t == ThrottleLevel::level::HIGH))
                     {
-                        temp[std::make_tuple(v, r, t)] = Gear::GearLevel::HIGH;
+                        temp[std::make_tuple(v, r, t)] = Gear::level::HIGH;
                     }
                     // 8
-                    else if (v == Velocity::VelocityLevel::HIGH && 
-                             r == EngineRpm::RpmLevel::LOW && 
-                             t == ThrottleLevel::ThrottleLevelEnum::HIGH)
+                    else if (v == Velocity::level::HIGH && 
+                             r == EngineRpm::level::LOW && 
+                             t == ThrottleLevel::level::HIGH)
                     {
-                        temp[std::make_tuple(v, r, t)] = Gear::GearLevel::MEDIUM;
+                        temp[std::make_tuple(v, r, t)] = Gear::level::MEDIUM;
                     }
                     // 9 and 10
-                    else if (v == Velocity::VelocityLevel::HIGH && 
-                             (r == EngineRpm::RpmLevel::MEDIUM || r == EngineRpm::RpmLevel::HIGH || r == EngineRpm::RpmLevel::LOW) && 
-                             (t == ThrottleLevel::ThrottleLevelEnum::LOW || t == ThrottleLevel::ThrottleLevelEnum::MEDIUM || t == ThrottleLevel::ThrottleLevelEnum::HIGH))
+                    else if (v == Velocity::level::HIGH && 
+                             (r == EngineRpm::level::MEDIUM || r == EngineRpm::level::HIGH || r == EngineRpm::level::LOW) && 
+                             (t == ThrottleLevel::level::LOW || t == ThrottleLevel::level::MEDIUM || t == ThrottleLevel::level::HIGH))
                     {
-                        temp[std::make_tuple(v, r, t)] = Gear::GearLevel::HIGH;
+                        temp[std::make_tuple(v, r, t)] = Gear::level::HIGH;
                     }
                 }
             }
         }
 
         return temp;
-    };
+    }();
 };
 
 
