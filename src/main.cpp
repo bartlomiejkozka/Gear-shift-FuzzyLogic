@@ -1,5 +1,6 @@
 #include "GearShift.hpp"
 #include <iostream>
+#include <cmath>
 #include "CLI/CLI.hpp"
 
 
@@ -19,6 +20,7 @@ int main(int argc, char **argv)
     GearShift gearShift;
     gearShift.setInputs(v, r, t); 
     float newGear = gearShift.shift();
+    std::cout << newGear << " " << std::round(newGear);
 
     return 0;
 }

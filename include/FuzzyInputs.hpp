@@ -73,8 +73,8 @@ struct Gear
     };
 
     inline static const std::unordered_map<level, std::array<uint8_t, 3>> ranges = {
-        {level::START, {0, 0, 2}},
-        {level::LOW, {0, 2, 4}},
+        {level::START, {1, 1, 2}},
+        {level::LOW, {1, 2, 4}},
         {level::MEDIUM, {2, 4, 6}},
         {level::HIGH, {4, 6, 7}}
     };

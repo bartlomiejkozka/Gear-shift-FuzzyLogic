@@ -17,6 +17,7 @@
 *   | Velocity   | Engine RPM      | Throttle Level  | Gear
 *-----------------------------------------------------------
 * 1 | Very Low   | Low/Medium/High | Low/Medium/High | Start
+*1.5| Low        | Low/Medium      | High            | Start      -> dynamic acceleration -> shift down gear
 * 2 | Low        | Low/Medium      | Low/Medium/High | Low
 * 3 | Low        | High            | Low/Medium/High | Medium     -> want sailing -> shift up gear
 * 4 | Medium     | Low             | High            | Low        -> dynamic acceleration -> shift down gear
@@ -46,8 +47,15 @@ struct FuzzyRules
                     {
                         temp[std::make_tuple(v, r, t)] = Gear::level::START;
                     }
+                    // 1.5
+                    else if (v == Velocity::level::LOW && 
+                            (r == EngineRpm::level::LOW || r == EngineRpm::level::MEDIUM) && 
+                            (t == ThrottleLevel::level::HIGH || t == ThrottleLevel::level::MEDIUM))
+                    {
+                        temp[std::make_tuple(v, r, t)] = Gear::level::START;
+                    }
                     // 2
-                    else if ((v == Velocity::level::LOW || v == Velocity::level::MEDIUM) && 
+                    else if (v == Velocity::level::LOW && 
                     (r == EngineRpm::level::LOW || r == EngineRpm::level::MEDIUM || r == EngineRpm::level::HIGH) && 
                     (t == ThrottleLevel::level::LOW || t == ThrottleLevel::level::MEDIUM || t == ThrottleLevel::level::HIGH))
                     {
