@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 project(GearShift-FuzzyLogic)
 
@@ -12,3 +12,17 @@ target_include_directories(GearShift PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(GearShift-Fuzzy src/main.cpp)
 target_link_libraries(GearShift-Fuzzy PRIVATE GearShift)
+
+# CLI11 tool
+
+include(FetchContent)
+FetchContent_Declare(
+    cli11_proj
+    QUIET
+    GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
+    GIT_TAG v2.3.2
+)
+
+FetchContent_MakeAvailable(cli11_proj)
+
+target_link_libraries(GearShift-Fuzzy PRIVATE CLI11::CLI11)
