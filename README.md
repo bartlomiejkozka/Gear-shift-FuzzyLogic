@@ -57,8 +57,11 @@ Cons:
 Current implementation is partially lack of precision espesially in low values of velocity. In the future should be consider to implement the idling gear, which should also appear when the car's velocity is 0, despite of whatever RPM and throttle level value is, because car is in idle mode (parking mode).
 Moreover, the transitions from one to another gear should be smoother. This problem may occure due to defuzzyfication method which is currently used.
 
+![Car acceleration](test-visualization/animation.gif)
+
+The tendecy line is good but beacuse of lack of expert knowlegde and therefore not perfect rules and also complexity in selection the right RPM in synchorization with right velocity to get as real-behavioured car acceleration as possible there are points in this animation where the gear is down shifting, which shouldn't occure in perfect car acceleration.
 
 ## Run
 1. Checkout the lastest version
 2. Go to test-visualization directory
-3. Run the GearShift function with prefered parameters
+3. Run the GearShift function with prefered parameters (exec file on repo is windows exec, so in case of need running app on linux, should be first generated linux exec)
